@@ -1,0 +1,55 @@
+/* @---	12/24/2012	Y.Ochi	Initial version */
+
+#map_canvas {
+  max-width: none; }
+
+.search-image {
+  width: 128px;
+  height: 160px;
+  float: left; }
+
+.search-image-small {
+  width: 50px;
+  height: 50px;
+  float: left; }
+
+.search-profile-image {
+  width: 50px;
+  height: 50px;
+  float: right; }
+
+.search-hr {
+  clear: both; }
+
+#search-result {
+  overflow: scroll; }
+
+.entry {
+  height : 180px;
+  margin: 2px;
+  overflow: scroll; }
+  .entry .search-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 3px; }
+  .entry .search-description {
+    height: 70px;
+    overflow: hidden; }
+
+.entry:hover {
+  background-color: #FFA; }
+
+.info-window-entry {
+  width: 200px; }
+
+.custom-map-control {
+  margin: 5px; }
+
+#refresh-control {
+  padding-left: 4px;
+  padding-right: 4px; }
+
+.loading-text {
+  font-size: 32px;
+  text-align: center; }
