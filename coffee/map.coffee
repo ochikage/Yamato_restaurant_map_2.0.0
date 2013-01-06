@@ -45,52 +45,39 @@ class Map
 
   createGroupedMarkers: (new_item) ->
     latlng = new_item.latlng()
+    id = new_item.item.places[0].id
     if latlng?
-      for grouped_marker in @grouped_marker_array
-        if(grouped_marker.item_array[0]? && grouped_marker.item_array[0].item.places[0].id == new_item.item.places[0].id)
-          grouped_marker.item_array.push(new_item)	  
-          pushed = true
-  
-      if !pushed
-        grouped_marker = new GroupedMarker
-        grouped_marker.item_array.push(new_item)
-        @grouped_marker_array.push(grouped_marker)
+      if !@grouped_marker_array[id]?
+        @grouped_marker_array[id] = new GroupedMarker
+        
+      @grouped_marker_array[id].count++
+      @grouped_marker_array[id].name = new_item.item.places[0].name
+      @grouped_marker_array[id].latlng = latlng
 
   #Marker
   showGroupedMarkers: ->
-    for grouped_marker, num_m in @grouped_marker_array
-      latlng = grouped_marker.item_array[0].latlng()
+    for key, grouped_marker of @grouped_marker_array
       marker = new google.maps.Marker(
         {
-          position: latlng
+          position: grouped_marker.latlng
           map: @gmap
         }
       )
-      for item, num_i in grouped_marker.item_array
-        offset = new google.maps.Size(0,BALLOON_OFFSET * num_i)
-        item.createInfoHtml(offset)
-      @bindBalloonToMarker num_m, marker
+      grouped_marker.createInfoHtml()
+      @bindBalloonToMarker key, marker
+
 
   bindBalloonToMarker: (index, marker) ->
     @openGroupedInfoWindowFn[index] = =>
       if @grouped_marker_array[index].openedInfoWindows
-        for item in @grouped_marker_array[index].item_array
-          item.infoWindow.open(@gmap, marker)
-          item.infoWindow.setZIndex(@zorder--)
-          @grouped_marker_array[index].openedInfoWindows = false
+        @grouped_marker_array[index].infoWindow.open(@gmap, marker)
+        @grouped_marker_array[index].openedInfoWindows = false
       else
-        for item in @grouped_marker_array[index].item_array
-          item.infoWindow.close()
-          @grouped_marker_array[index].openedInfoWindows = true
+        @grouped_marker_array[index].infoWindow.close()
+        @grouped_marker_array[index].openedInfoWindows = true
     google.maps.event.addListener marker, 'click', @openGroupedInfoWindowFn[index]
     @markers.push(marker)
-
-  getGroupedMarkerIndex: (item_id) ->
-    for grouped_marker, num_m in @grouped_marker_array
-      for grouped_item in grouped_marker.item_array
-        if grouped_item.item.id == item_id then return num_m
-    return 0
-
+  
   clearMarkers: ->
     for item in @loaded_data.items
       if item.infoWindow?
@@ -150,11 +137,26 @@ class Map
       @showGroupedMarkers() 
       
     $('.entry').bind 'click', (event) =>
-      item_id = $(event.currentTarget).data('item-id')
-      @openGroupedInfoWindowFn[@getGroupedMarkerIndex(item_id)]()
+      spot_id = $(event.currentTarget).data('spot-id')
+      @openGroupedInfoWindowFn[spot_id]()
 
 class GroupedMarker
   constructor: ->
-    @item_array = []
+    @name = ""
+    @count = 0
+    @latlng = null
     @openedInfoWindows = true
+    
+  renderContext: ->
+    {
+      spot_name: @name
+      spot_count: @count
+    }
+    
+  infoHtml: ->
+    template = Handlebars.compile($('#info-window-template').html())
+    template(@renderContext())
+    
+  createInfoHtml: ()->
+    @infoWindow = new google.maps.InfoWindow({content: @infoHtml()})
 

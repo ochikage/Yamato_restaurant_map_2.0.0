@@ -124,43 +124,31 @@
     };
 
     Map.prototype.createGroupedMarkers = function(new_item) {
-      var grouped_marker, latlng, pushed, _i, _len, _ref;
+      var id, latlng;
       latlng = new_item.latlng();
+      id = new_item.item.places[0].id;
       if (latlng != null) {
-        _ref = this.grouped_marker_array;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          grouped_marker = _ref[_i];
-          if ((grouped_marker.item_array[0] != null) && grouped_marker.item_array[0].item.places[0].id === new_item.item.places[0].id) {
-            grouped_marker.item_array.push(new_item);
-            pushed = true;
-          }
+        if (!(this.grouped_marker_array[id] != null)) {
+          this.grouped_marker_array[id] = new GroupedMarker;
         }
-        if (!pushed) {
-          grouped_marker = new GroupedMarker;
-          grouped_marker.item_array.push(new_item);
-          return this.grouped_marker_array.push(grouped_marker);
-        }
+        this.grouped_marker_array[id].count++;
+        this.grouped_marker_array[id].name = new_item.item.places[0].name;
+        return this.grouped_marker_array[id].latlng = latlng;
       }
     };
 
     Map.prototype.showGroupedMarkers = function() {
-      var grouped_marker, item, latlng, marker, num_i, num_m, offset, _i, _j, _len, _len1, _ref, _ref1, _results;
+      var grouped_marker, key, marker, _ref, _results;
       _ref = this.grouped_marker_array;
       _results = [];
-      for (num_m = _i = 0, _len = _ref.length; _i < _len; num_m = ++_i) {
-        grouped_marker = _ref[num_m];
-        latlng = grouped_marker.item_array[0].latlng();
+      for (key in _ref) {
+        grouped_marker = _ref[key];
         marker = new google.maps.Marker({
-          position: latlng,
+          position: grouped_marker.latlng,
           map: this.gmap
         });
-        _ref1 = grouped_marker.item_array;
-        for (num_i = _j = 0, _len1 = _ref1.length; _j < _len1; num_i = ++_j) {
-          item = _ref1[num_i];
-          offset = new google.maps.Size(0, BALLOON_OFFSET * num_i);
-          item.createInfoHtml(offset);
-        }
-        _results.push(this.bindBalloonToMarker(num_m, marker));
+        grouped_marker.createInfoHtml();
+        _results.push(this.bindBalloonToMarker(key, marker));
       }
       return _results;
     };
@@ -168,46 +156,16 @@
     Map.prototype.bindBalloonToMarker = function(index, marker) {
       var _this = this;
       this.openGroupedInfoWindowFn[index] = function() {
-        var item, _i, _j, _len, _len1, _ref, _ref1, _results, _results1;
         if (_this.grouped_marker_array[index].openedInfoWindows) {
-          _ref = _this.grouped_marker_array[index].item_array;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            item = _ref[_i];
-            item.infoWindow.open(_this.gmap, marker);
-            item.infoWindow.setZIndex(_this.zorder--);
-            _results.push(_this.grouped_marker_array[index].openedInfoWindows = false);
-          }
-          return _results;
+          _this.grouped_marker_array[index].infoWindow.open(_this.gmap, marker);
+          return _this.grouped_marker_array[index].openedInfoWindows = false;
         } else {
-          _ref1 = _this.grouped_marker_array[index].item_array;
-          _results1 = [];
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            item = _ref1[_j];
-            item.infoWindow.close();
-            _results1.push(_this.grouped_marker_array[index].openedInfoWindows = true);
-          }
-          return _results1;
+          _this.grouped_marker_array[index].infoWindow.close();
+          return _this.grouped_marker_array[index].openedInfoWindows = true;
         }
       };
       google.maps.event.addListener(marker, 'click', this.openGroupedInfoWindowFn[index]);
       return this.markers.push(marker);
-    };
-
-    Map.prototype.getGroupedMarkerIndex = function(item_id) {
-      var grouped_item, grouped_marker, num_m, _i, _j, _len, _len1, _ref, _ref1;
-      _ref = this.grouped_marker_array;
-      for (num_m = _i = 0, _len = _ref.length; _i < _len; num_m = ++_i) {
-        grouped_marker = _ref[num_m];
-        _ref1 = grouped_marker.item_array;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          grouped_item = _ref1[_j];
-          if (grouped_item.item.id === item_id) {
-            return num_m;
-          }
-        }
-      }
-      return 0;
     };
 
     Map.prototype.clearMarkers = function() {
@@ -293,9 +251,9 @@
         this.showGroupedMarkers();
       }
       return $('.entry').bind('click', function(event) {
-        var item_id;
-        item_id = $(event.currentTarget).data('item-id');
-        return _this.openGroupedInfoWindowFn[_this.getGroupedMarkerIndex(item_id)]();
+        var spot_id;
+        spot_id = $(event.currentTarget).data('spot-id');
+        return _this.openGroupedInfoWindowFn[spot_id]();
       });
     };
 
@@ -306,9 +264,30 @@
   GroupedMarker = (function() {
 
     function GroupedMarker() {
-      this.item_array = [];
+      this.name = "";
+      this.count = 0;
+      this.latlng = null;
       this.openedInfoWindows = true;
     }
+
+    GroupedMarker.prototype.renderContext = function() {
+      return {
+        spot_name: this.name,
+        spot_count: this.count
+      };
+    };
+
+    GroupedMarker.prototype.infoHtml = function() {
+      var template;
+      template = Handlebars.compile($('#info-window-template').html());
+      return template(this.renderContext());
+    };
+
+    GroupedMarker.prototype.createInfoHtml = function() {
+      return this.infoWindow = new google.maps.InfoWindow({
+        content: this.infoHtml()
+      });
+    };
 
     return GroupedMarker;
 
@@ -325,7 +304,7 @@
     }
 
     Item.prototype.renderContext = function() {
-      var item_img_m, item_img_s, now, passedDate, updated_at;
+      var item_img_m, item_img_s, now, passedDate, spot_id, updated_at;
       updated_at = new Date(this.item.updated_at);
       now = new Date();
       passedDate = (now - updated_at) / (1000 * 60 * 60 * 24);
@@ -336,6 +315,10 @@
       }
       if (this.item.image_urls[0] != null) {
         item_img_m = this.item.image_urls[0].crop_M;
+      }
+      spot_id = 0;
+      if (this.item.places[0] != null) {
+        spot_id = this.item.places[0].id;
       }
       return {
         id: this.item.id,
@@ -349,7 +332,8 @@
         tab_url: "https://tab.do/items/" + this.item.id,
         stream_url: "https://tab.do/streams/" + this.item.stream.id,
         stream_title: this.item.stream.title,
-        is_new: passedDate < 1
+        is_new: passedDate < 1,
+        spot_id: spot_id
       };
     };
 
@@ -357,19 +341,6 @@
       var template;
       template = Handlebars.compile($('#entry-template').html());
       return template(this.renderContext());
-    };
-
-    Item.prototype.infoHtml = function() {
-      var template;
-      template = Handlebars.compile($('#info-window-template').html());
-      return template(this.renderContext());
-    };
-
-    Item.prototype.createInfoHtml = function(offset) {
-      return this.infoWindow = new google.maps.InfoWindow({
-        content: this.infoHtml(),
-        pixelOffset: offset
-      });
     };
 
     Item.prototype.latlng = function() {

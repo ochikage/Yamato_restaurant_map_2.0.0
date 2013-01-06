@@ -19,6 +19,10 @@ class Item
     item_img_m = ""
     if @item.image_urls[0]? then item_img_s = @item.image_urls[0].crop_S
     if @item.image_urls[0]? then item_img_m = @item.image_urls[0].crop_M
+    
+    spot_id = 0
+    if @item.places[0]? then spot_id = @item.places[0].id
+
 
     {
       id: @item.id
@@ -33,18 +37,19 @@ class Item
       stream_url: "https://tab.do/streams/#{@item.stream.id}"
       stream_title: @item.stream.title
       is_new: passedDate < 1
+      spot_id: spot_id
     }
 
   html: ->
     template = Handlebars.compile($('#entry-template').html())
     template(@renderContext())
 
-  infoHtml: ->
-    template = Handlebars.compile($('#info-window-template').html())
-    template(@renderContext())
+  # infoHtml: ->
+    # template = Handlebars.compile($('#info-window-template').html())
+    # template(@renderContext())
     
-  createInfoHtml: (offset)->
-    @infoWindow = new google.maps.InfoWindow({ content: @infoHtml() , pixelOffset: offset})
+  # createInfoHtml: (offset)->
+    # @infoWindow = new google.maps.InfoWindow({ content: @infoHtml() , pixelOffset: offset})
 
   latlng: ->
     if @item.places.length > 0

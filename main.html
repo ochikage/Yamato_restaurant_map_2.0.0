@@ -12,7 +12,7 @@
     <script src="handlebars-1.0.0.beta.6.js"></script>
     <script src="main.js"></script>
     <script id="entry-template" type="text/x-handlebars-template">
-      <li class="entry" data-item-id="{{id}}">
+      <li class="entry" data-item-id="{{id}}" data-spot-id="{{spot_id}}">
         <img class="search-image" src="{{image_url}}" />
         <h3 class="search-title">{{#if is_new}}<span class="label label-important">New</span>{{/if}}{{title}}</h3>
         <img class="search-profile-image" src="{{profile_image_url}}" />
@@ -20,12 +20,20 @@
         <a class="stream-link btn" href="{{stream_url}}" target="_blank">{{stream_title}}</a>
       </li>
     </script>
+    <!--
     <script id="info-window-template" type="text/x-handlebars-template">
       <div class="info-window-entry">
         <a class="tab-link" href="{{tab_url}}" target="_blank"><img class="search-image-small" src="{{image_url_small}}" />
           <h3 class="search-title">{{short_title}}</h3>
           <div class="search-description">{{short_description}}</div>
         </a>
+      </div>
+    </script>
+    -->
+    <script id="info-window-template" type="text/x-handlebars-template">
+      <div class="info-window-entry">
+        <h3>{{spot_name}}</h3>
+        <div>登録件数: {{spot_count}}</div>
       </div>
     </script>
     <script id="refresh-control-template" type="text/x-handlebars-template">
