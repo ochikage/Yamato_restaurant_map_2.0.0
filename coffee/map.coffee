@@ -64,19 +64,38 @@ class Map
         }
       )
       grouped_marker.createInfoHtml()
-      @bindBalloonToMarker key, marker
+      grouped_marker.marker = marker
+      @bindBalloonToMarker key
 
-
-  bindBalloonToMarker: (index, marker) ->
+  bindBalloonToMarker: (index) -> 
+    grouped_marker = @grouped_marker_array[index]
     @openGroupedInfoWindowFn[index] = =>
-      if @grouped_marker_array[index].openedInfoWindows
-        @grouped_marker_array[index].infoWindow.open(@gmap, marker)
-        @grouped_marker_array[index].openedInfoWindows = false
-      else
-        @grouped_marker_array[index].infoWindow.close()
-        @grouped_marker_array[index].openedInfoWindows = true
-    google.maps.event.addListener marker, 'click', @openGroupedInfoWindowFn[index]
-    @markers.push(marker)
+      if grouped_marker.openedInfoWindows  # when balloon pops
+        # Hide other markers
+        for marker in @markers
+          if marker.getPosition() != grouped_marker.latlng
+            marker.setVisible(false)
+        # Hide other lists
+        $('.entry').each ->
+          id = $(this).data("spot-id")
+          if id != parseInt(index)
+            $(this).hide()
+
+        grouped_marker.infoWindow.open(@gmap, grouped_marker.marker)    
+        grouped_marker.openedInfoWindows = false
+      
+      else  # when balloon hides
+        # Show other markers
+        for marker in @markers
+          marker.setVisible(true)
+        # Show other lists
+        $('.entry').each ->
+          $(this).show()
+        grouped_marker.infoWindow.close()
+        grouped_marker.openedInfoWindows = true 
+        
+    google.maps.event.addListener grouped_marker.marker, 'click', @openGroupedInfoWindowFn[index]
+    @markers.push(grouped_marker.marker)
   
   clearMarkers: ->
     for item in @loaded_data.items
@@ -146,6 +165,7 @@ class GroupedMarker
     @count = 0
     @latlng = null
     @openedInfoWindows = true
+    @marker = null
     
   renderContext: ->
     {

@@ -148,24 +148,50 @@
           map: this.gmap
         });
         grouped_marker.createInfoHtml();
-        _results.push(this.bindBalloonToMarker(key, marker));
+        grouped_marker.marker = marker;
+        _results.push(this.bindBalloonToMarker(key));
       }
       return _results;
     };
 
-    Map.prototype.bindBalloonToMarker = function(index, marker) {
-      var _this = this;
+    Map.prototype.bindBalloonToMarker = function(index) {
+      var grouped_marker,
+        _this = this;
+      grouped_marker = this.grouped_marker_array[index];
       this.openGroupedInfoWindowFn[index] = function() {
-        if (_this.grouped_marker_array[index].openedInfoWindows) {
-          _this.grouped_marker_array[index].infoWindow.open(_this.gmap, marker);
-          return _this.grouped_marker_array[index].openedInfoWindows = false;
+        var marker, _i, _j, _len, _len1, _ref, _ref1;
+        if (grouped_marker.openedInfoWindows) {
+          _ref = _this.markers;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            marker = _ref[_i];
+            if (marker.getPosition() !== grouped_marker.latlng) {
+              marker.setVisible(false);
+            }
+          }
+          $('.entry').each(function() {
+            var id;
+            id = $(this).data("spot-id");
+            if (id !== parseInt(index)) {
+              return $(this).hide();
+            }
+          });
+          grouped_marker.infoWindow.open(_this.gmap, grouped_marker.marker);
+          return grouped_marker.openedInfoWindows = false;
         } else {
-          _this.grouped_marker_array[index].infoWindow.close();
-          return _this.grouped_marker_array[index].openedInfoWindows = true;
+          _ref1 = _this.markers;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            marker = _ref1[_j];
+            marker.setVisible(true);
+          }
+          $('.entry').each(function() {
+            return $(this).show();
+          });
+          grouped_marker.infoWindow.close();
+          return grouped_marker.openedInfoWindows = true;
         }
       };
-      google.maps.event.addListener(marker, 'click', this.openGroupedInfoWindowFn[index]);
-      return this.markers.push(marker);
+      google.maps.event.addListener(grouped_marker.marker, 'click', this.openGroupedInfoWindowFn[index]);
+      return this.markers.push(grouped_marker.marker);
     };
 
     Map.prototype.clearMarkers = function() {
@@ -268,6 +294,7 @@
       this.count = 0;
       this.latlng = null;
       this.openedInfoWindows = true;
+      this.marker = null;
     }
 
     GroupedMarker.prototype.renderContext = function() {
