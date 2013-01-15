@@ -84,6 +84,10 @@ class Map
         grouped_marker.infoWindow.open(@gmap, grouped_marker.marker)    
         grouped_marker.openedInfoWindows = false
       
+        $('#clear_select').show(500)
+        $('#clear_select').bind 'click', (event) =>
+          @clearSelect()
+        
       else  # when balloon hides
         # Show other markers
         for marker in @markers
@@ -93,10 +97,27 @@ class Map
           $(this).show()
         grouped_marker.infoWindow.close()
         grouped_marker.openedInfoWindows = true 
+        $('#clear_select').hide()
         
     google.maps.event.addListener grouped_marker.marker, 'click', @openGroupedInfoWindowFn[index]
     @markers.push(grouped_marker.marker)
   
+  clearSelect: ->
+    #hide balloons
+    for key, grouped_marker of @grouped_marker_array
+      grouped_marker.infoWindow.close?()
+      grouped_marker.openedInfoWindows = true
+    
+    #show markers
+    for marker in @markers
+      marker.setVisible(true)
+    
+    # Show lists
+    $('.entry').each ->
+      $(this).show()
+
+    $('#clear_select').hide()
+      
   clearMarkers: ->
     for item in @loaded_data.items
       if item.infoWindow?
@@ -155,8 +176,8 @@ class Map
       @createGroupedMarkers(item_instance)
       @showGroupedMarkers() 
       
-    $('.entry').bind 'click', (event) =>
-      spot_id = $(event.currentTarget).data('spot-id')
+    $('.item_title').bind 'click', (event) =>
+      spot_id = $(event.currentTarget).parents("li.entry").data('spot-id')
       @openGroupedInfoWindowFn[spot_id]()
 
 class GroupedMarker
@@ -164,6 +185,7 @@ class GroupedMarker
     @name = ""
     @count = 0
     @latlng = null
+    @infoWindow = null
     @openedInfoWindows = true
     @marker = null
     

@@ -47,6 +47,8 @@ $(document).ready ->
   #Get Center  
   load_mmc_location()
 
+  $('#clear_select').hide()
+  
 load_mmc_location = ->
   Map.get().load()    
     

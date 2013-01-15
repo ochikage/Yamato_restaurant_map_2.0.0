@@ -14,7 +14,7 @@
     <script id="entry-template" type="text/x-handlebars-template">
       <li class="entry" data-item-id="{{id}}" data-spot-id="{{spot_id}}">
         <img class="search-image" src="{{image_url}}" />
-        <h3 class="search-title">{{#if is_new}}<span class="label label-important">New</span>{{/if}}{{title}}</h3>
+        <h3 class="search-title">{{#if is_new}}<span class="label label-important">New</span>{{/if}} <a href="{{tab_url}}" target="_blank">{{title}}</a> @ <a class="item_title" >{{spot_name}}</a></h3>
         <img class="search-profile-image" src="{{profile_image_url}}" />
         <div class="search-description">{{long_description}}</div>
         <a class="stream-link btn" href="{{stream_url}}" target="_blank">{{stream_title}}</a>
@@ -115,7 +115,7 @@
 	</div>
     <div class="row-fluid">
       <div class="span6">
-
+        <div id="clear_select">選択解除</div>
         <ol id="search-result"></ol>
       </div>
       <div class="span6" id="map_canvas"></div>

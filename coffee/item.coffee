@@ -6,9 +6,6 @@ class Item
   constructor: (@item) ->
     #Reclip count
     #@item.title += "(" + @item.reclip_count + ")";
-    if @item.places[0]?
-       @item.title += " @ " + @item.places[0].name
-
 
   renderContext: ->
     updated_at = new Date(@item.updated_at)
@@ -21,7 +18,9 @@ class Item
     if @item.image_urls[0]? then item_img_m = @item.image_urls[0].crop_M
     
     spot_id = 0
+    spot_name = ""
     if @item.places[0]? then spot_id = @item.places[0].id
+    if @item.places[0]? then spot_name = @item.places[0].name
 
 
     {
@@ -38,6 +37,7 @@ class Item
       stream_title: @item.stream.title
       is_new: passedDate < 1
       spot_id: spot_id
+      spot_name: spot_name
     }
 
   html: ->

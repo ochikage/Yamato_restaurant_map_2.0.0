@@ -24,7 +24,8 @@
       load_address($('#address-input').val());
       return false;
     });
-    return load_mmc_location();
+    load_mmc_location();
+    return $('#clear_select').hide();
   });
 
   load_mmc_location = function() {
@@ -176,7 +177,11 @@
             }
           });
           grouped_marker.infoWindow.open(_this.gmap, grouped_marker.marker);
-          return grouped_marker.openedInfoWindows = false;
+          grouped_marker.openedInfoWindows = false;
+          $('#clear_select').show(500);
+          return $('#clear_select').bind('click', function(event) {
+            return _this.clearSelect();
+          });
         } else {
           _ref1 = _this.markers;
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
@@ -187,11 +192,33 @@
             return $(this).show();
           });
           grouped_marker.infoWindow.close();
-          return grouped_marker.openedInfoWindows = true;
+          grouped_marker.openedInfoWindows = true;
+          return $('#clear_select').hide();
         }
       };
       google.maps.event.addListener(grouped_marker.marker, 'click', this.openGroupedInfoWindowFn[index]);
       return this.markers.push(grouped_marker.marker);
+    };
+
+    Map.prototype.clearSelect = function() {
+      var grouped_marker, key, marker, _base, _i, _len, _ref, _ref1;
+      _ref = this.grouped_marker_array;
+      for (key in _ref) {
+        grouped_marker = _ref[key];
+        if (typeof (_base = grouped_marker.infoWindow).close === "function") {
+          _base.close();
+        }
+        grouped_marker.openedInfoWindows = true;
+      }
+      _ref1 = this.markers;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        marker = _ref1[_i];
+        marker.setVisible(true);
+      }
+      $('.entry').each(function() {
+        return $(this).show();
+      });
+      return $('#clear_select').hide();
     };
 
     Map.prototype.clearMarkers = function() {
@@ -276,9 +303,9 @@
         this.createGroupedMarkers(item_instance);
         this.showGroupedMarkers();
       }
-      return $('.entry').bind('click', function(event) {
+      return $('.item_title').bind('click', function(event) {
         var spot_id;
-        spot_id = $(event.currentTarget).data('spot-id');
+        spot_id = $(event.currentTarget).parents("li.entry").data('spot-id');
         return _this.openGroupedInfoWindowFn[spot_id]();
       });
     };
@@ -293,6 +320,7 @@
       this.name = "";
       this.count = 0;
       this.latlng = null;
+      this.infoWindow = null;
       this.openedInfoWindows = true;
       this.marker = null;
     }
@@ -325,13 +353,10 @@
 
     function Item(item) {
       this.item = item;
-      if (this.item.places[0] != null) {
-        this.item.title += " @ " + this.item.places[0].name;
-      }
     }
 
     Item.prototype.renderContext = function() {
-      var item_img_m, item_img_s, now, passedDate, spot_id, updated_at;
+      var item_img_m, item_img_s, now, passedDate, spot_id, spot_name, updated_at;
       updated_at = new Date(this.item.updated_at);
       now = new Date();
       passedDate = (now - updated_at) / (1000 * 60 * 60 * 24);
@@ -344,8 +369,12 @@
         item_img_m = this.item.image_urls[0].crop_M;
       }
       spot_id = 0;
+      spot_name = "";
       if (this.item.places[0] != null) {
         spot_id = this.item.places[0].id;
+      }
+      if (this.item.places[0] != null) {
+        spot_name = this.item.places[0].name;
       }
       return {
         id: this.item.id,
@@ -360,7 +389,8 @@
         stream_url: "https://tab.do/streams/" + this.item.stream.id,
         stream_title: this.item.stream.title,
         is_new: passedDate < 1,
-        spot_id: spot_id
+        spot_id: spot_id,
+        spot_name: spot_name
       };
     };
 
