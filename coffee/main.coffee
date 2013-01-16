@@ -11,7 +11,7 @@
 ##                                                                           ##
 ## ** How to compile CofeeScript**                                           ##
 ## 1. Open cmd.exe                                                           ##
-## 2. coffee -cj ../main.js main.coffee map.coffee item.coffee parameter.coffee ##
+## 2. coffee -cj ../main.js main.coffee map.coffee item.coffee parameter.coffee spot.coffee##
 ##                                                                           ##
 ## ** References **                                                          ##
 ## 1. http://d.hatena.ne.jp/nodamushi/20110108/1294518316                    ##
