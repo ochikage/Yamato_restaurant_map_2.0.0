@@ -11,7 +11,7 @@
 ##                                                                           ##
 ## ** How to compile CofeeScript**                                           ##
 ## 1. Open cmd.exe                                                           ##
-## 2. coffee -cj ../main.js main.coffee map.coffee item.coffee parameter.coffee spot.coffee##
+## 2. coffee -cj ../main.js main.coffee map.coffee item.coffee parameter.coffee spot.coffee content.coffee ##
 ##                                                                           ##
 ## ** References **                                                          ##
 ## 1. http://d.hatena.ne.jp/nodamushi/20110108/1294518316                    ##
@@ -20,8 +20,11 @@
 ## @---	12/24/2012	Y.Ochi	Initial version                                  ##
 ###############################################################################
 
+
 #Entry point
 $(document).ready ->
+  content = Content.get()
+
   resizeContentHeight()
   $(window).bind("resize", resizeContentHeight)
   
@@ -33,9 +36,18 @@ $(document).ready ->
     search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val() 
     false 
   $('#item-pickup-form').bind 'submit', ->
-    search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val() #007C
+    search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val()
     false
 
+  #List control
+  $('#clear_select').bind 'click', ->
+    content.clearSelect()
+    $('.entry').each ->
+      $(this).show()
+
+    $('#clear_select').hide()
+
+  
   #Map Search
   $('#mmc-location-button').bind 'click', ->
     load_mmc_location()
@@ -50,8 +62,9 @@ $(document).ready ->
   $('#clear_select').hide()
   
 load_mmc_location = ->
-  Map.get().load()    
-    
+  content = Content.get()
+  content.load()
+  
 resizeContentHeight = ->
   contentsHeight = window.innerHeight - $('.navbar').height() - 30
   contentsHeight = 0 if contentsHeight < 0
@@ -78,6 +91,7 @@ read_user_follow_items = (cb) ->
   $.get(url, {	}, cb)
 
 search_item = (target, category, word) ->
-  Map.get().update(target, category, word)
-  true
-
+  content = Content.get()
+  content.getSelect(target, category, word)
+  return true
+  

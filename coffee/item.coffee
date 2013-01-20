@@ -3,38 +3,38 @@
 ###############################################################################
 
 class Item
-  constructor: (@item) ->
+  constructor: (@data) ->
     #Reclip count
-    #@item.title += "(" + @item.reclip_count + ")";
+    #@data.title += "(" + @data.reclip_count + ")";
 
   renderContext: ->
-    updated_at = new Date(@item.updated_at)
+    updated_at = new Date(@data.updated_at)
     now = new Date()
     passedDate = (now - updated_at) / (1000 * 60 * 60 * 24)
 
     item_img_s = ""
     item_img_m = ""
-    if @item.image_urls[0]? then item_img_s = @item.image_urls[0].crop_S
-    if @item.image_urls[0]? then item_img_m = @item.image_urls[0].crop_M
+    if @data.image_urls[0]? then item_img_s = @data.image_urls[0].crop_S
+    if @data.image_urls[0]? then item_img_m = @data.image_urls[0].crop_M
     
     spot_id = 0
     spot_name = ""
-    if @item.places[0]? then spot_id = @item.places[0].id
-    if @item.places[0]? then spot_name = @item.places[0].name
+    if @data.places[0]? then spot_id = @data.places[0].id
+    if @data.places[0]? then spot_name = @data.places[0].name
 
 
     {
-      id: @item.id
-      short_title: truncate(@item.title, 20)
-      title: @item.title
-      short_description: truncate(@item.description, 50)
-      long_description: truncate(@item.description, 300)
+      id: @data.id
+      short_title: truncate(@data.title, 20)
+      title: @data.title
+      short_description: truncate(@data.description, 50)
+      long_description: truncate(@data.description, 300)
       image_url_small: item_img_s
       image_url: item_img_m
-      profile_image_url: @item.user.profile_image_url.crop_S
-      tab_url: "https://tab.do/items/#{@item.id}"
-      stream_url: "https://tab.do/streams/#{@item.stream.id}"
-      stream_title: @item.stream.title
+      profile_image_url: @data.user.profile_image_url.crop_S
+      tab_url: "https://tab.do/items/#{@data.id}"
+      stream_url: "https://tab.do/streams/#{@data.stream.id}"
+      stream_title: @data.stream.title
       is_new: passedDate < 1
       spot_id: spot_id
       spot_name: spot_name
@@ -44,18 +44,38 @@ class Item
     template = Handlebars.compile($('#entry-template').html())
     template(@renderContext())
 
-  # infoHtml: ->
-    # template = Handlebars.compile($('#info-window-template').html())
-    # template(@renderContext())
-    
-  # createInfoHtml: (offset)->
-    # @infoWindow = new google.maps.InfoWindow({ content: @infoHtml() , pixelOffset: offset})
-
   latlng: ->
-    if @item.places.length > 0
-      place = @item.places[0]
+    if @data.places.length > 0
+      place = @data.places[0]
       new google.maps.LatLng(place.lat, place.lon)
-      
+  
+  getItemId: ->
+    return @data.id
+    
+  getSpotId: ->
+    id = 0;
+    if @data.places[0]?
+      id = @data.places[0].id
+    return id;
+  
+  getSpotName: ->
+    name = "N/A";
+    if @data.places[0]?
+      name = @data.places[0].name
+    return name;
+    
+  getTitle: ->
+    return @data.title
+    
+  getDescription: ->
+    return @data.description
+    
+  getListElement: ->
+    return @list_el
+    
+  setListElement: (list_el)->
+    @list_el = list_el
+    
   truncate = (string, maxchars) ->
     if !string? then ""
 
