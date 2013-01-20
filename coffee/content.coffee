@@ -91,18 +91,20 @@ class Content
         
     google.maps.event.addListener spot.marker, 'click', spot.balloonFn
 
-  getSelect: (target, category, word)->
+  getSelect: (category = ".*", word = ".*", distance = Infinity)->
     @setListVisible(false)
     @setMarkerVisible(false)
     
     for item in @items
-      bTitle = item.getTitle().match(new RegExp(target)) && item.getTitle().match(new RegExp(category)) && item.getTitle().match(new RegExp(word))
-      bDescription = item.getDescription().match(new RegExp(target)) && item.getDescription().match(new RegExp(category)) && item.getDescription().match(new RegExp(word)) 
-      spot_id = item.getSpotId()
+      bTitle = item.getTitle().match(new RegExp(category)) && item.getTitle().match(new RegExp(word))
+      bDescription = item.getDescription().match(new RegExp(category)) && item.getDescription().match(new RegExp(word))
+      bDistance = if item.distance < distance then true else false
 
-      if (bTitle? || bDescription?)
+      @map.gotoPlace(ZOOM_LEVEL[distance])
+      
+      if (bTitle? || bDescription?) && bDistance
         item.getListElement().show()
-        @spots[spot_id].marker.setVisible(true)
+        @spots[item.getSpotId()].marker.setVisible(true)
        
     return true
   
@@ -118,6 +120,7 @@ class Content
       spot.marker.setVisible(visible)
   
   clearSelect: ->
+    @map.gotoPlace()
     for key, spot of @spots
       #hide balloons
       spot.balloon.close?()

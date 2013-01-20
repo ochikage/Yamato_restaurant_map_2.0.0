@@ -16,13 +16,14 @@ class Map
   # setCenter: (latlng) ->
     # @gmap.setCenter(latlng)
     
-  constructor: (latlng= new google.maps.LatLng(INIT_LATITUDE,INIT_LONGTITUDE), zoom=SEARCH_ZOOM_LEVEL) ->
+  constructor: (latlng= new google.maps.LatLng(INIT_LATITUDE,INIT_LONGTITUDE), zoom=DEFAULT_ZOOM_LEVEL) ->
     #Prepare map
     myOptions = {
       zoom: zoom
       center: latlng
       mapTypeId: google.maps.MapTypeId.ROADMAP
       scrollwheel: false
+      scaleControl: true
     }
     @gmap = new google.maps.Map(document.getElementById('map_canvas'), myOptions)
     
@@ -35,3 +36,7 @@ class Map
       else
         setTimeout(read_nearby_popular_with_current_map_range, 1000)
     read_nearby_popular_with_current_map_range()
+
+  gotoPlace:(zoom=DEFAULT_ZOOM_LEVEL, latlng= new google.maps.LatLng(INIT_LATITUDE,INIT_LONGTITUDE)) ->
+    @gmap.setCenter(latlng)
+    @gmap.setZoom(zoom)

@@ -6,12 +6,21 @@ class Item
   constructor: (@data) ->
     #Reclip count
     #@data.title += "(" + @data.reclip_count + ")";
+    #calc distance
+    to_lat = 0;
+    to_lon = 0;
+    if @data.places[0].lat? then to_lat = @data.places[0].lat
+    if @data.places[0].lon? then to_lon = @data.places[0].lon
+    to = new google.maps.LatLng(to_lat, to_lon)
+    from = new google.maps.LatLng(INIT_LATITUDE, INIT_LONGTITUDE)
+    @distance = google.maps.geometry.spherical.computeDistanceBetween(from, to)
 
   renderContext: ->
     updated_at = new Date(@data.updated_at)
     now = new Date()
     passedDate = (now - updated_at) / (1000 * 60 * 60 * 24)
 
+    #sometimes those values are returned as null
     item_img_s = ""
     item_img_m = ""
     if @data.image_urls[0]? then item_img_s = @data.image_urls[0].crop_S
@@ -38,6 +47,7 @@ class Item
       is_new: passedDate < 1
       spot_id: spot_id
       spot_name: spot_name
+      distance: Math.round(@distance)
     }
 
   html: ->

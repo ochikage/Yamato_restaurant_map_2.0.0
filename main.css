@@ -27,7 +27,7 @@
 .entry {
   height : 180px;
   margin: 2px;
-  overflow: scroll; }
+  /*overflow: scroll;*/ }
   .entry .search-title {
     overflow: hidden;
     text-overflow: ellipsis;

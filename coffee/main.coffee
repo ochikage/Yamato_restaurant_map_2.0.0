@@ -28,15 +28,24 @@ $(document).ready ->
   resizeContentHeight()
   $(window).bind("resize", resizeContentHeight)
   
+  #Create select item
+  for key, category of CATEGORY
+    elm = $("<option>").html(key).attr({value : category})
+    $("#item-pickup-category").append(elm)
+  
+  for key, distance of DISTANCE
+    elm = $("<option>").html(key).attr({value : distance})
+    $("#item-pickup-distance").append(elm)
+  
   #Item Search
-  $('#item-pickup-target').bind 'change', ->
-    search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val() 
-    false 
   $('#item-pickup-category').bind 'change', ->
-    search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val() 
+    search_item $('#item-pickup-category').val(), $('#item-pickup-input').val(), $('#item-pickup-distance').val()
     false 
+  $('#item-pickup-distance').bind 'change', ->
+    search_item $('#item-pickup-category').val(), $('#item-pickup-input').val(), $('#item-pickup-distance').val()
+    false
   $('#item-pickup-form').bind 'submit', ->
-    search_item $('#item-pickup-target').val(), $('#item-pickup-category').val(), $('#item-pickup-input').val()
+    search_item $('#item-pickup-category').val(), $('#item-pickup-input').val(), $('#item-pickup-distance').val()
     false
 
   #List control
@@ -50,7 +59,8 @@ $(document).ready ->
   
   #Map Search
   $('#mmc-location-button').bind 'click', ->
-    load_mmc_location()
+    content = Content.get()
+    content.map.gotoPlace()
 
   $('#location-search').bind 'submit', ->
     load_address $('#address-input').val()
@@ -77,7 +87,7 @@ load_address = (address) ->
     if status == google.maps.GeocoderStatus.OK
       latlng = results[0].geometry.location
       m = Map.get(latlng)
-      m.gmap.setZoom(SEARCH_ZOOM_LEVEL)
+      m.gmap.setZoom(DEFAULT_ZOOM_LEVEL)
       m.load()
     else
       alert("Geocode failed: #{status}")
@@ -90,8 +100,8 @@ read_user_follow_items = (cb) ->
   url = api_url("users/" + USER_ID + "/items")
   $.get(url, {	}, cb)
 
-search_item = (target, category, word) ->
+search_item = (category, word, distance) ->
   content = Content.get()
-  content.getSelect(target, category, word)
+  content.getSelect(category, word, distance)
   return true
   

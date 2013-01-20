@@ -17,6 +17,7 @@
         <h3 class="search-title">{{#if is_new}}<span class="label label-important">New</span>{{/if}} <a href="{{tab_url}}" target="_blank">{{title}}</a> @ <a class="item_title" >{{spot_name}}</a></h3>
         <img class="search-profile-image" src="{{profile_image_url}}" />
         <div class="search-description">{{long_description}}</div>
+        <div class="search-distance">距離: {{distance}}m</div>
         <a class="stream-link btn" href="{{stream_url}}" target="_blank">{{stream_title}}</a>
       </li>
     </script>
@@ -41,51 +42,10 @@
 	<div class="row-fluid">
 		<div class="span6">
 			<form class="navbar-search pull-left">
-				<select class="input-small" id="item-pickup-target">
-					<option value=".*">用途</option>
-					<option value="ランチ">ランチ</option>
-					<option value="ディナー">ディナー</option>
-					<option value="カフェ">カフェ</option>
-					<option value="飲み会">飲み会</option>
-					<option value="接待">接待</option>
-				</select>
 				<select class="input-small" id="item-pickup-category">
-					<option value=".*">カテゴリ</option>
-					<option value="和食">和食</option>
-					<option value="日本料理">日本料理</option>
-					<option value="寿司">寿司</option>
-					<option value="魚介|海鮮料理">魚介・海鮮料理</option>
-					<option value="ソバ|そば|蕎麦">そば(蕎麦)</option>
-					<option value="うどん|饂飩">うどん</option>
-					<option value="うなぎ|ウナギ|鰻">うなぎ</option>
-					<option value="焼き鳥|やきとり|焼きとり">焼き鳥</option>
-					<option value="とんかつ|トンカツ|豚カツ">とんかつ</option>
-					<option value="串揚げ">串揚げ</option>
-					<option value="天ぷら">天ぷら</option>
-					<option value="お好み焼き">お好み焼き</option>
-					<option value="もんじゃ焼き">もんじゃ焼き</option>
-					<option value="しゃぶしゃぶ">しゃぶしゃぶ</option>
-					<option value="沖縄料理">沖縄料理</option>
-					<option value="洋食">洋食</option>
-					<option value="フレンチ|フランス料理">フレンチ</option>
-					<option value="イタリアン|イタリア料理">イタリアン</option>
-					<option value="スパニッシュ|スペイン料理">スペイン料理</option>
-					<option value="パスタ">パスタ</option>
-					<option value="ピザ|ピッツア">ピザ</option>
-					<option value="ステーキ">ステーキ</option>
-					<option value="ハンバーグ">ハンバーグ</option>
-					<option value="ハンバーガー">ハンバーガー</option>
-					<option value="中華|中華料理">中華料理</option>
-					<option value="ギョウザ|ぎょうざ|餃子">餃子</option>
-					<option value="韓国料理">韓国料理</option>
-					<option value="タイ料理">タイ料理</option>
-					<option value="拉麺|ラーメン">ラーメン</option>
-					<option value="カレー">カレー</option>
-					<option value="焼肉">焼肉</option>
-					<option value="ホルモン">ホルモン</option>
-					<option value="鍋">鍋</option>
-					<option value="もつ鍋">もつ鍋</option>
 				</select>	
+        <select class="input-small" id="item-pickup-distance">
+        </select>
 			</form>
 			<form class="navbar-search pull-right" id="item-pickup-form">
 
