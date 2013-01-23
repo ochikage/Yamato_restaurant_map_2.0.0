@@ -14,6 +14,7 @@ class Content
     @spots = []
     @map = new Map()
     @list_div = $('#search-result')
+    @clear_button = $('#clear_button')
     
   load: () -> 
     @list_div.empty()
@@ -52,7 +53,6 @@ class Content
         
   placeMarkers: ->
     for key, spot of @spots
-      console.log(key)
       spot.marker = new google.maps.Marker(
         {
           position: spot.latlng
@@ -79,7 +79,7 @@ class Content
         spot.balloon.open(@map.gmap, spot.marker)    
         spot.IsBalloonOpened = false
       
-        $('#clear_select').show(500)
+        @clear_button.attr('disabled', false)
         
       else  # when balloon hides
         @setListVisible(true)
@@ -87,7 +87,7 @@ class Content
         spot.balloon.close()
         spot.IsBalloonOpened = true 
         
-        $('#clear_select').hide()
+        @clear_button.attr('disabled', true)
         
     google.maps.event.addListener spot.marker, 'click', spot.balloonFn
 
@@ -105,7 +105,11 @@ class Content
       if (bTitle? || bDescription?) && bDistance
         item.getListElement().show()
         @spots[item.getSpotId()].marker.setVisible(true)
-       
+    
+    if(category == ".*" && word == ".*" && distance == Infinity)
+      @clear_button.attr('disabled', true)
+    else
+      @clear_button.attr('disabled', false)
     return true
   
   setListVisible:(visible) ->

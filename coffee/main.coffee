@@ -1,4 +1,4 @@
-###############################################################################
+﻿###############################################################################
 ## **Summary**                                                               ##
 ## This code is originally created by tab team. Y.Ochi modifed it for Lenovo.##
 ## Oritinal file could be downloaded from below;                             ##
@@ -49,13 +49,15 @@ $(document).ready ->
     false
 
   #List control
-  $('#clear_select').bind 'click', ->
+  $('#clear_button').bind 'click', ->
     content.clearSelect()
     $('.entry').each ->
       $(this).show()
 
-    $('#clear_select').hide()
-
+    $('#clear_button').attr('disabled', true)
+    $('#item-pickup-category').val("カテゴリ")
+    $('#item-pickup-distance').val("距離")
+    $('#item-pickup-input').val("")
   
   #Map Search
   $('#mmc-location-button').bind 'click', ->
@@ -84,11 +86,11 @@ resizeContentHeight = ->
 load_address = (address) ->
   geocoder = new google.maps.Geocoder()
   geocoder.geocode { address: address }, (results, status) ->
+    content = Content.get()
     if status == google.maps.GeocoderStatus.OK
-      latlng = results[0].geometry.location
-      m = Map.get(latlng)
-      m.gmap.setZoom(DEFAULT_ZOOM_LEVEL)
-      m.load()
+      content.map.gotoPlace(content.map.gmap.getZoom(), results[0].geometry.location)
+    else if address == ""
+      content.map.gotoPlace() 
     else
       alert("Geocode failed: #{status}")
 

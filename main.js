@@ -33,12 +33,15 @@
       search_item($('#item-pickup-category').val(), $('#item-pickup-input').val(), $('#item-pickup-distance').val());
       return false;
     });
-    $('#clear_select').bind('click', function() {
+    $('#clear_button').bind('click', function() {
       content.clearSelect();
       $('.entry').each(function() {
         return $(this).show();
       });
-      return $('#clear_select').hide();
+      $('#clear_button').attr('disabled', true);
+      $('#item-pickup-category').val("カテゴリ");
+      $('#item-pickup-distance').val("距離");
+      return $('#item-pickup-input').val("");
     });
     $('#mmc-location-button').bind('click', function() {
       content = Content.get();
@@ -74,12 +77,12 @@
     return geocoder.geocode({
       address: address
     }, function(results, status) {
-      var latlng, m;
+      var content;
+      content = Content.get();
       if (status === google.maps.GeocoderStatus.OK) {
-        latlng = results[0].geometry.location;
-        m = Map.get(latlng);
-        m.gmap.setZoom(DEFAULT_ZOOM_LEVEL);
-        return m.load();
+        return content.map.gotoPlace(content.map.gmap.getZoom(), results[0].geometry.location);
+      } else if (address === "") {
+        return content.map.gotoPlace();
       } else {
         return alert("Geocode failed: " + status);
       }
@@ -379,6 +382,7 @@
       this.spots = [];
       this.map = new Map();
       this.list_div = $('#search-result');
+      this.clear_button = $('#clear_button');
     }
 
     Content.prototype.load = function() {
@@ -437,7 +441,6 @@
       _results = [];
       for (key in _ref) {
         spot = _ref[key];
-        console.log(key);
         spot.marker = new google.maps.Marker({
           position: spot.latlng,
           map: this.map.gmap
@@ -468,13 +471,13 @@
           spot.marker.setVisible(true);
           spot.balloon.open(_this.map.gmap, spot.marker);
           spot.IsBalloonOpened = false;
-          return $('#clear_select').show(500);
+          return _this.clear_button.attr('disabled', false);
         } else {
           _this.setListVisible(true);
           _this.setMarkerVisible(true);
           spot.balloon.close();
           spot.IsBalloonOpened = true;
-          return $('#clear_select').hide();
+          return _this.clear_button.attr('disabled', true);
         }
       };
       return google.maps.event.addListener(spot.marker, 'click', spot.balloonFn);
@@ -504,6 +507,11 @@
           item.getListElement().show();
           this.spots[item.getSpotId()].marker.setVisible(true);
         }
+      }
+      if (category === ".*" && word === ".*" && distance === Infinity) {
+        this.clear_button.attr('disabled', true);
+      } else {
+        this.clear_button.attr('disabled', false);
       }
       return true;
     };

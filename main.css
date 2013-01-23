@@ -57,3 +57,7 @@
 #clear_select{
   text-align: center;
 }
+
+#icon_gmap{
+  cursor: pointer;
+}
