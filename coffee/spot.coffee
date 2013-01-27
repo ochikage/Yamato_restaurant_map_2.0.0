@@ -24,3 +24,4 @@ class Spot
     
   createInfoHtml: ()->
     @balloon = new google.maps.InfoWindow({content: @infoHtml()})
+  

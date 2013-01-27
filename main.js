@@ -415,11 +415,12 @@
         this.addSpot(item);
       }
       this.placeMarkers();
-      return $('.item_title').bind('click', function(event) {
+      $('.item_title').bind('click', function(event) {
         var spot_id;
         spot_id = $(event.currentTarget).parents("li.entry").data('spot-id');
         return _this.spots[spot_id].balloonFn();
       });
+      return this.clear_button.attr('disabled', true);
     };
 
     Content.prototype.addSpot = function(item) {
@@ -480,7 +481,8 @@
           return _this.clear_button.attr('disabled', true);
         }
       };
-      return google.maps.event.addListener(spot.marker, 'click', spot.balloonFn);
+      google.maps.event.addListener(spot.marker, 'click', spot.balloonFn);
+      return google.maps.event.addListener(spot.balloon, 'closeclick', spot.balloonFn);
     };
 
     Content.prototype.getSelect = function(category, word, distance) {

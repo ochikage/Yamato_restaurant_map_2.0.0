@@ -47,15 +47,16 @@
 				</select>	
         <select class="input-small" id="item-pickup-distance">
         </select>
-        <input class="search-query" id="item-pickup-input" placeholder="Search (Input free word+ Enter)" type="text" />
+        <input class="search-query" id="item-pickup-input" placeholder="自由検索(例：おいしい) + Enter" type="text" />
 			</form>
 			<form class="navbar-search pull-right">
-				<button type="button" id="clear_button" disabled>クリア</button>
+				<!--<button type="button" id="clear_button" disabled>クリア</button>-->
+        <a class="btn pull-right" id="clear_button">クリア</a>
 			</form>
 		</div>
 		<div class="span6">
 			<form class="navbar-search pull-left" id="location-search">
-				<input class="search-query" id="address-input" placeholder="Search (Input location + Enter)" type="text" />
+				<input class="search-query" id="address-input" placeholder="場所検索(例：横浜駅) + Enter" type="text" />
 			</form>
       <form class="navbar-search pull-right">
 				<a class="btn pull-right" id="mmc-location-button">Go to MMC buildling</a>

@@ -41,7 +41,8 @@ class Content
     $('.item_title').bind 'click', (event) =>
       spot_id = $(event.currentTarget).parents("li.entry").data('spot-id')
       @spots[spot_id].balloonFn()
-    
+    @clear_button.attr('disabled', true)
+      
   addSpot: (item) ->
     latlng = item.latlng()
     id = item.getSpotId()
@@ -61,7 +62,7 @@ class Content
       )
       spot.createInfoHtml()
       @bindBalloonToMarker key
-      
+  
   bindBalloonToMarker: (index) -> 
     spot = @spots[index]
     spot.balloonFn = =>
@@ -90,6 +91,7 @@ class Content
         @clear_button.attr('disabled', true)
         
     google.maps.event.addListener spot.marker, 'click', spot.balloonFn
+    google.maps.event.addListener spot.balloon, 'closeclick', spot.balloonFn
 
   getSelect: (category = ".*", word = ".*", distance = Infinity)->
     @setListVisible(false)

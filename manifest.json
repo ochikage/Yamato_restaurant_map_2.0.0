@@ -1,7 +1,7 @@
 {
   "name": "YAMATO Restaurant Map",
   "description": "Yamato Lab. of Lenovo Japan shares restaurant map",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "manifest_version": 2, 
   "app": {
     "launch": {
