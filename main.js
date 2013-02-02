@@ -7,6 +7,9 @@
     content = Content.get();
     resizeContentHeight();
     $(window).bind("resize", resizeContentHeight);
+    $('#reload').bind('click', function() {
+      return window.location.reload();
+    });
     for (key in CATEGORY) {
       category = CATEGORY[key];
       elm = $("<option>").html(key).attr({
@@ -510,7 +513,7 @@
           this.spots[item.getSpotId()].marker.setVisible(true);
         }
       }
-      if (category === ".*" && word === ".*" && distance === Infinity) {
+      if (category === ".*" && word === "" && distance === "Infinity") {
         this.clear_button.attr('disabled', true);
       } else {
         this.clear_button.attr('disabled', false);

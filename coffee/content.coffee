@@ -108,7 +108,7 @@ class Content
         item.getListElement().show()
         @spots[item.getSpotId()].marker.setVisible(true)
     
-    if(category == ".*" && word == ".*" && distance == Infinity)
+    if(category == ".*" && word == "" && distance == "Infinity")
       @clear_button.attr('disabled', true)
     else
       @clear_button.attr('disabled', false)

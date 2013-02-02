@@ -28,6 +28,10 @@ $(document).ready ->
   resizeContentHeight()
   $(window).bind("resize", resizeContentHeight)
   
+  #reload
+  $('#reload').bind 'click', ->
+    window.location.reload();
+    
   #Create select item
   for key, category of CATEGORY
     elm = $("<option>").html(key).attr({value : category})
