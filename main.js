@@ -486,7 +486,7 @@
     };
 
     Content.prototype.getSelect = function(category, word, distance) {
-      var bDescription, bDistance, bTitle, item, _i, _len, _ref;
+      var bDistance, bTarget, item, target, _i, _len, _ref;
       if (category == null) {
         category = ".*";
       }
@@ -501,11 +501,11 @@
       _ref = this.items;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
-        bTitle = item.getTitle().match(new RegExp(category)) && item.getTitle().match(new RegExp(word));
-        bDescription = item.getDescription().match(new RegExp(category)) && item.getDescription().match(new RegExp(word));
+        target = item.getTitle() + item.getDescription();
+        bTarget = target.match(new RegExp(category)) && target.match(new RegExp(word));
         bDistance = item.distance < distance ? true : false;
         this.map.gotoPlace(ZOOM_LEVEL[distance]);
-        if (((bTitle != null) || (bDescription != null)) && bDistance) {
+        if (bTarget && bDistance) {
           item.getListElement().show();
           this.spots[item.getSpotId()].marker.setVisible(true);
         }

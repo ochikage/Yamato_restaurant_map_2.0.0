@@ -98,13 +98,13 @@ class Content
     @setMarkerVisible(false)
     
     for item in @items
-      bTitle = item.getTitle().match(new RegExp(category)) && item.getTitle().match(new RegExp(word))
-      bDescription = item.getDescription().match(new RegExp(category)) && item.getDescription().match(new RegExp(word))
+      target = item.getTitle() + item.getDescription()
+      bTarget = target.match(new RegExp(category)) && target.match(new RegExp(word))
       bDistance = if item.distance < distance then true else false
 
       @map.gotoPlace(ZOOM_LEVEL[distance])
       
-      if (bTitle? || bDescription?) && bDistance
+      if bTarget && bDistance
         item.getListElement().show()
         @spots[item.getSpotId()].marker.setVisible(true)
     
