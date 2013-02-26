@@ -3,7 +3,7 @@
 ###############################################################################
 
 DEFAULT_ZOOM_LEVEL = 16
-USER_ID = 47009             #Lenovo accout ID
+USER_ID = 58591             #Lenovo accout ID (Big Fun 2012, bigfun2012@outlook.com)
 INIT_LATITUDE = 35.457611    #MMC building
 INIT_LONGTITUDE = 139.633296 #MMC building
 BALLOON_OFFSET = -110
