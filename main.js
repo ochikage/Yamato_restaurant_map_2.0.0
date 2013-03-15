@@ -168,15 +168,19 @@
     var truncate;
 
     function Item(data) {
-      var from, to, to_lat, to_lon;
+      var from, to, to_lat, to_lon, _ref, _ref1;
       this.data = data;
       to_lat = 0;
       to_lon = 0;
-      if (this.data.places[0].lat != null) {
+      if (((_ref = this.data.places[0]) != null ? _ref.lat : void 0) != null) {
         to_lat = this.data.places[0].lat;
+      } else {
+        return;
       }
-      if (this.data.places[0].lon != null) {
+      if (((_ref1 = this.data.places[0]) != null ? _ref1.lon : void 0) != null) {
         to_lon = this.data.places[0].lon;
+      } else {
+        return;
       }
       to = new google.maps.LatLng(to_lat, to_lon);
       from = new google.maps.LatLng(INIT_LATITUDE, INIT_LONGTITUDE);

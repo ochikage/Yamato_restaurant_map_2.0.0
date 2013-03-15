@@ -9,8 +9,12 @@ class Item
     #calc distance
     to_lat = 0;
     to_lon = 0;
-    if @data.places[0].lat? then to_lat = @data.places[0].lat
-    if @data.places[0].lon? then to_lon = @data.places[0].lon
+    
+    if @data.places[0]?.lat? then to_lat = @data.places[0].lat
+    else return
+    if @data.places[0]?.lon? then to_lon = @data.places[0].lon
+    else return
+
     to = new google.maps.LatLng(to_lat, to_lon)
     from = new google.maps.LatLng(INIT_LATITUDE, INIT_LONGTITUDE)
     @distance = google.maps.geometry.spherical.computeDistanceBetween(from, to)
