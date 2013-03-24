@@ -100,7 +100,11 @@ class Content
     for item in @items
       target = item.getTitle() + item.getDescription()
       bTarget = target.match(new RegExp(category)) && target.match(new RegExp(word))
-      bDistance = if item.distance < distance then true else false
+      #bDistance = if item.distance < distance then true else false
+      if distance > 0
+        bDistance = if item.distance < distance then true else false
+      else
+        bDistance = if item.distance > -(distance) then true else false
 
       @map.gotoPlace(ZOOM_LEVEL[distance])
       

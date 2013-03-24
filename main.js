@@ -323,7 +323,8 @@
     "300m以内": "300",
     "400m以内": "400",
     "500m以内": "500",
-    "600m以内": "600"
+    "600m以内": "600",
+    "50km以上": "-50000"
   };
 
   ZOOM_LEVEL = {
@@ -333,7 +334,8 @@
     300: 16,
     400: 16,
     500: 15,
-    600: 15
+    600: 15,
+    "-50000": 6
   };
 
   Spot = (function() {
@@ -510,7 +512,11 @@
         item = _ref[_i];
         target = item.getTitle() + item.getDescription();
         bTarget = target.match(new RegExp(category)) && target.match(new RegExp(word));
-        bDistance = item.distance < distance ? true : false;
+        if (distance > 0) {
+          bDistance = item.distance < distance ? true : false;
+        } else {
+          bDistance = item.distance > -distance ? true : false;
+        }
         this.map.gotoPlace(ZOOM_LEVEL[distance]);
         if (bTarget && bDistance) {
           item.getListElement().show();
